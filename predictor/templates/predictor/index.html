@@ -14,11 +14,13 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        height: 100vh;
+        min-height: 100vh;
       }
       .card {
         border-radius: 15px;
         box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
       }
       .btn-primary {
         background-color: #0066ff;
@@ -27,17 +29,29 @@
     </style>
   </head>
   <body>
-    <div class="card p-4" style="width: 100%; max-width: 450px">
-      <h3 class="text-center mb-3">📈 Stock Price Predictor</h3>
+    <div class="card p-4">
+      <h3 class="text-center mb-4">📈 Stock Price Predictor</h3>
 
       <form method="POST">
         {% csrf_token %}
         <div class="mb-3">
-          <label for="days" class="form-label"
-            >Enter number of days ahead:</label
+          <label for="symbol" class="form-label"
+            >Stock Symbol (e.g., AAPL, TSLA, INFY.NS):</label
           >
-          <input type="number" name="days" class="form-control" required />
+          <input type="text" name="symbol" class="form-control" required />
         </div>
+
+        <div class="mb-3">
+          <label for="days" class="form-label">Days into the future:</label>
+          <input
+            type="number"
+            name="days"
+            class="form-control"
+            min="1"
+            required
+          />
+        </div>
+
         <div class="d-grid">
           <button type="submit" class="btn btn-primary">Predict</button>
         </div>
@@ -47,6 +61,8 @@
       <div class="alert alert-success mt-4 text-center">
         Predicted Stock Price: ₹{{ prediction|floatformat:2 }}
       </div>
+      {% endif %} {% if graph %}
+      <div class="mt-4">{{ graph|safe }}</div>
       {% endif %}
     </div>
   </body>
